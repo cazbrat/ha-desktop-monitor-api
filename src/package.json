@@ -1,7 +1,7 @@
 {
-  "name": "ha-monitor-api",
+  "name": "ha-desktop-monitor",
   "version": "1.0.0",
-  "description": "A lightweight API that exposes the system's current performance (such as disk, network, cpu/temperature etc)",
+  "description": "A lightweight API that exposes the system's current performance (such as cpu, drive, mem, network, and more...)",
   "main": "server.js",
   "scripts": {
     "start": "forever server.js"
@@ -12,15 +12,13 @@
     "http",
     "api"
   ],
-  "author": "David Nedved",
+  "author": "Juan Rodriguez",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.4",
-    "node-os-utils": "^1.0.7",
-    "forever": "^0.15.4",
+    "express": "^4.17.1",
+    "forever": "^2.0.0",
+    "node-os-utils": "^1.2.2",
     "sequence": "^3.0.0"
   },
-  "devDependencies": {
-    "nodemon": "^1.18.10"
-  }
+  "devDependencies": {}
 }
