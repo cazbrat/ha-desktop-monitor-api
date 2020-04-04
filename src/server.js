@@ -21,19 +21,25 @@ function buildResources(callback) {
     var resObject = {};
     sequence
         .then(next => { // SYSTEM
-            resObject.system = {
-                'uptime': os.uptime(),
+            resObject.state = [os.hostname(), "Desktop Monitor", null, "mdi:desktop-classic"];
+            resObject.attribute.system = {
+                'uptime': [os.uptime(), "Uptime", "s", "mdi:clock-outline"],
             };
             next();
         })
         .then(next => { // CPU (nou)
             nou.cpu.usage()
-                .then((usagedata) => {
-                    resObject.cpu = {
-                        'core': os.cpus().length,
-                        'loadavg': os.loadavg(),
-                        'usage': usagedata,
-                        'temp': null
+                .then(usagedata => {
+                    var patt64 = /.+64/g;
+                    var patt32 = /.+32/g;
+                    if (patt64.test(os.arch())) { var icon = "mdi:cpu-64-bit" }
+                    else if (patt32.test(os.arch())) { var icon = "mdi:cpu-32-bit" }
+                    else { var icon = "mdi:chip" };
+                    resObject.attribute.cpu = {
+                        'core': [os.cpus().length, "Core", "core", icon],
+                        'loadavg': [os.loadavg(), null, "threat", "mdi:buffer"],
+                        'usage': [usagedata, "Usage", "%", icon],
+                        'temp': [null, "Temperature", "°C", "mdi:thermometer"]
                     };
                     next();
                 });
@@ -41,17 +47,17 @@ function buildResources(callback) {
         .then(next => { // DRIVE (nou)
             nou.drive.used()
                 .then(drivedata => {
-                    resObject.drive = {
-                        'total': drivedata.totalGb,
-                        'used': drivedata.usedGb
+                    resObject.attribute.drive = {
+                        'total': [drivedata.totalGb, "Total", "Gb", "mdi:harddisk"],
+                        'used': [drivedata.usedGb, "Used", "Gb", "mdi:harddisk"],
                     };
                     next();
                 });
         })
         .then(next => { // MEM
-            resObject.mem = {
-                'total': os.totalmem(),
-                'used': os.totalmem() - os.freemem()
+            resObject.attribute.mem = {
+                'total': [Math.round(os.totalmem() / 1024 / 1024), "Total", "Mb", "mdi:memory"],
+                'used': [Math.round((os.totalmem() - os.freemem()) / 1024 / 1024), "Used", "Mb", "mdi:memory"]
             };
             next();
         })

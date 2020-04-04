@@ -1,7 +1,7 @@
 {
   "name": "ha-desktop-monitor",
   "version": "1.0.0",
-  "description": "A lightweight API that exposes the system's current performance (such as cpu, drive, mem, network, and more...)",
+  "description": "A lightweight API that exposes the system's current performance",
   "main": "server.js",
   "scripts": {
     "start": "forever server.js"

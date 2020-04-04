@@ -1,15 +1,13 @@
 # Home Assistant - Monitoring API
 
+![GitHub](https://img.shields.io/github/license/cazbrat/ha-monitor-api)
+
 Welcome to the lightweight "ha-desktop-monitor" project! 
 (a fork of  [`ned-kelly/ha-monitor-api`](https://github.com/ned-kelly/ha-monitor-api) project)
 
 This is a quick  lightweight API designed to expose the system's current metrics of a linux desktop as a simple JSON endpoint that your Home Assistant instance can query.
 
 It's been designed to run in a Docker Container so that you can quickly feed metrics back to Home Assistant and the primary goal of this tool is to expose a simple lightweight API that runs in a docker container exposing monitoring stats in real-time that can be fed into your other systems.
-
----------------------------------------------
-
-![GitHub](https://img.shields.io/github/license/cazbrat/ha-monitor-api)
 
 **NOTE:** The following system architectures are currently supported: `amd64`. - If you're running on an architecture other than these the process will not start / you will need to build the docker image yourself.
 
@@ -24,7 +22,12 @@ It's been designed to run in a Docker Container so that you can quickly feed met
 
 It's pretty straightforward, just clone down the sources and stand up the container like so:
 
-_TODO_ !!
+```
+git clone https://github.com/cazbrat/ha-desktop-monitor.git
+cd ha-desktop-monitor
+docker build --tag desktop-monitor .
+docker run --publish 9999:9999 --detach --name desktop-monitor  desktop-monitor:latest
+```
 
 ## Integrating to Home Assistant
 
