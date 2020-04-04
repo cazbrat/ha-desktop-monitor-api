@@ -20,13 +20,13 @@ var nou = require('node-os-utils');
 function buildResources(callback) {
     var resObject = {
         "state": null,
-        "attribute": {}
+        "attributes": {}
     };
     sequence
-        .then(next => { // SYSTEM
-            resObject.state = [os.hostname(), "Desktop Monitor", null, "mdi:desktop-classic"];
-            resObject.attribute.system = {
-                'uptime': [os.uptime(), "Uptime", "s", "mdi:clock-outline"],
+        .then(next => { // SYSTEM (nou%)
+            resObject.state = [nou.os.hostname(), "Desktop Monitor", null, "mdi:desktop-classic"];
+            resObject.attributes.system = {
+                'uptime': [nou.os.uptime(), "Uptime", "s", "mdi:clock-outline"],
             };
             next();
         })
@@ -38,7 +38,7 @@ function buildResources(callback) {
                     if (patt64.test(os.arch())) { var icon = "mdi:cpu-64-bit" }
                     else if (patt32.test(os.arch())) { var icon = "mdi:cpu-32-bit" }
                     else { var icon = "mdi:chip" };
-                    resObject.attribute.cpu = {
+                    resObject.attributes.cpu = {
                         'core': [os.cpus().length, "Core", "core", icon],
                         'loadavg': [os.loadavg(), null, "threat", "mdi:buffer"],
                         'usage': [usagedata, "Usage", "%", icon],
@@ -47,22 +47,25 @@ function buildResources(callback) {
                     next();
                 });
         })
-        .then(next => { // DRIVE (nou)
+        .then(next => { // DRIVE (nou%)
             nou.drive.used()
                 .then(drivedata => {
-                    resObject.attribute.drive = {
+                    resObject.attributes.drive = {
                         'total': [drivedata.totalGb, "Total", "Gb", "mdi:harddisk"],
                         'used': [drivedata.usedGb, "Used", "Gb", "mdi:harddisk"],
                     };
                     next();
                 });
         })
-        .then(next => { // MEM
-            resObject.attribute.mem = {
-                'total': [Math.round(os.totalmem() / 1024 / 1024), "Total", "Mb", "mdi:memory"],
-                'used': [Math.round((os.totalmem() - os.freemem()) / 1024 / 1024), "Used", "Mb", "mdi:memory"]
-            };
-            next();
+        .then(next => { // MEM (nou%)
+            nou.mem.used()
+                .then(memdata => {
+                    resObject.attributes.mem = {
+                        'total': [memdata.totalMemMb, "Total", "Mb", "mdi:memory"],
+                        'used': [memdata.usedMemMb, "Used", "Mb", "mdi:memory"],
+                    };
+                    next();
+                });
         })
         .then(next => {
             callback(resObject);
