@@ -18,7 +18,10 @@ var os = require('os');
 var nou = require('node-os-utils');
 
 function buildResources(callback) {
-    var resObject = {};
+    var resObject = {
+        "state": null,
+        "attribute": {}
+    };
     sequence
         .then(next => { // SYSTEM
             resObject.state = [os.hostname(), "Desktop Monitor", null, "mdi:desktop-classic"];
