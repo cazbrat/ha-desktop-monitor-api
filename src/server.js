@@ -19,51 +19,51 @@ var nou = require('node-os-utils');
 
 function buildResources(callback) {
     var resObject = {
-        "state": null,
-        "attributes": {}
+        "system": { "state": null, "attributes": null },
+        "cpu": { "state": null, "attributes": null },
+        "memory": { "state": null, "attributes": null },
+        "drive": { "state": null, "attributes": null },
     };
     sequence
         .then(next => { // SYSTEM (nou%)
-            resObject.state = [nou.os.hostname(), "Desktop Monitor", null, "mdi:desktop-classic"];
-            resObject.attributes.system = {
-                'uptime': [nou.os.uptime(), "Uptime", "s", "mdi:clock-outline"],
-            };
+            resObject.system.state = [nou.os.hostname(), "Hostname", null];
+            resObject.system.attributes = [
+                [nou.os.uptime(), "Uptime", "s"],
+            ];
             next();
         })
         .then(next => { // CPU (nou)
             nou.cpu.usage()
                 .then(usagedata => {
-                    var patt64 = /.+64/g;
-                    var patt32 = /.+32/g;
-                    if (patt64.test(os.arch())) { var icon = "mdi:cpu-64-bit" }
-                    else if (patt32.test(os.arch())) { var icon = "mdi:cpu-32-bit" }
-                    else { var icon = "mdi:chip" };
-                    resObject.attributes.cpu = {
-                        'core': [os.cpus().length, "Core", "core", icon],
-                        'loadavg': [os.loadavg(), null, "threat", "mdi:buffer"],
-                        'usage': [usagedata, "Usage", "%", icon],
-                        'temp': [null, "Temperature", "°C", "mdi:thermometer"]
-                    };
-                    next();
-                });
-        })
-        .then(next => { // DRIVE (nou%)
-            nou.drive.used()
-                .then(drivedata => {
-                    resObject.attributes.drive = {
-                        'total': [drivedata.totalGb, "Total", "Gb", "mdi:harddisk"],
-                        'used': [drivedata.usedGb, "Used", "Gb", "mdi:harddisk"],
-                    };
+                    resObject.cpu.state = [usagedata, "Usage", "%"];
+                    resObject.cpu.attributes = [
+                        [os.cpus().length, "Core", "core"],
+                        [os.arch(), "Arch", null],
+                        [os.loadavg(), "Load averange", "threat"],
+                        [null, "Temperature", "°C"]
+                    ];
                     next();
                 });
         })
         .then(next => { // MEM (nou%)
             nou.mem.used()
                 .then(memdata => {
-                    resObject.attributes.mem = {
-                        'total': [memdata.totalMemMb, "Total", "Mb", "mdi:memory"],
-                        'used': [memdata.usedMemMb, "Used", "Mb", "mdi:memory"],
-                    };
+                    resObject.memory.state = [(100 * memdata.usedMemMb / memdata.totalMemMb).toFixed(2), "Used", "%"];
+                    resObject.memory.attributes = [
+                        [memdata.totalMemMb, "Total", "Mb"],
+                        [memdata.usedMemMb, "Used", "Mb"],
+                    ];
+                    next();
+                });
+        })
+        .then(next => { // DRIVE (nou%)
+            nou.drive.used()
+                .then(drivedata => {
+                    resObject.drive.state = [(100 * drivedata.usedGb / drivedata.totalGb).toFixed(2), "Used", "%"];
+                    resObject.attributes = [
+                        [drivedata.totalGb, "Total", "Gb"],
+                        [drivedata.usedGb, "Used", "Gb"],
+                    ];
                     next();
                 });
         })

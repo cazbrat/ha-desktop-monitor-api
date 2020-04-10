@@ -1,11 +1,11 @@
 # Home Assistant - Monitoring API
 
-![GitHub](https://img.shields.io/github/license/cazbrat/ha-monitor-api)
+![GitHub](https://img.shields.io/github/license/cazbrat/ha-desktop-monitor-api)
 
-Welcome to the lightweight "ha-desktop-monitor" project! 
-(a fork of  [`ned-kelly/ha-monitor-api`](https://github.com/ned-kelly/ha-monitor-api) project)
+Welcome to the lightweight "ha-desktop-monitor-api" project! 
+(a fork of [`ned-kelly/ha-monitor-api`](https://github.com/ned-kelly/ha-monitor-api) project)
 
-This is a quick  lightweight API designed to expose the system's current metrics of a linux desktop as a simple JSON endpoint that your Home Assistant instance can query.
+This is a quick lightweight API designed to expose the system's current metrics of a linux desktop as a simple JSON endpoint that your Home Assistant instance can query.
 
 It's been designed to run in a Docker Container so that you can quickly feed metrics back to Home Assistant and the primary goal of this tool is to expose a simple lightweight API that runs in a docker container exposing monitoring stats in real-time that can be fed into your other systems.
 
@@ -15,19 +15,19 @@ It's been designed to run in a Docker Container so that you can quickly feed met
 ## Prerequisites
 
 - Docker
-- Docker-compose
 - Linux OS (amd64) that you wish to monitor
 
 ## Standing up
 
-It's pretty straightforward, just clone down the sources and stand up the container like so:
+It's pretty straightforward, just clone down the sources and build and run the container like so:
 
 ```
 git clone https://github.com/cazbrat/ha-desktop-monitor.git
 cd ha-desktop-monitor
 docker build --tag desktop-monitor .
-docker run --publish 9999:9999 --detach --name desktop-monitor  desktop-monitor:latest
+docker run --publish 9999:9999 --detach --name desktop-monitor desktop-monitor:latest
 ```
+**NOTE:** Is important publish de port 9999.
 
 ## Integrating to Home Assistant
 
@@ -49,8 +49,11 @@ Integrating into Home Assistant can be done like any other sensor using the [RES
 # To use the data on the Home Assistant Lovelace Dashboard we need to extract the values from the sensor, and store them as their own sensor values...
 - platform: template
   sensors:
-    facundo_desktop_sistem_uptime:
-      value_template: '{{ states.sensor.facundo_desktop.attributes["system"]["uptime"] | multiply(0.01666) | round(0) }}'
+    facundo_desktop_system:
+      value_template: '{{ states.sensor.facundo_desktop.system.state }}'
+      entity_id: sensor.facundo_desktop
+    facundo_desktop_system_uptime:
+      value_template: '{{ states.sensor.facundo_desktop.system.attributes["uptime"] | multiply(0.01666) | round(0) }}'
       unit_of_measurement: 'm'
       entity_id: sensor.facundo_desktop
     facundo_desktop_cpu_core:

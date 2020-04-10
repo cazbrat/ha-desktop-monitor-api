@@ -1,6 +1,6 @@
 {
-  "name": "ha-desktop-monitor",
-  "version": "1.0.0",
+  "name": "ha-desktop-monitor-api",
+  "version": "1.0.1",
   "description": "A lightweight API that exposes the system's current performance",
   "main": "server.js",
   "scripts": {
