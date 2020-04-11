@@ -22,74 +22,13 @@ It's been designed to run in a Docker Container so that you can quickly feed met
 It's pretty straightforward, just clone down the sources and build and run the container like so:
 
 ```
-git clone https://github.com/cazbrat/ha-desktop-monitor.git
-cd ha-desktop-monitor
-docker build --tag desktop-monitor .
-docker run --publish 9999:9999 --detach --name desktop-monitor desktop-monitor:latest
+git clone https://github.com/cazbrat/ha-desktop-monitor-api.git
+cd ha-desktop-monitor-api
+docker build --tag desktop-monitor-api .
+docker run --restart always --env HOSTNAME=`hostname -f` --publish 9999:9999 --detach --name desktop-monitor-api desktop-monitor-api:latest
 ```
-**NOTE:** Is important publish de port 9999.
 
 ## Integrating to Home Assistant
 
-Integrating into Home Assistant can be done like any other sensor using the [RESTful Sensor](https://www.home-assistant.io/components/sensor.rest/).
-
-**_Your (sensors/configuration.yaml) file:_**
-
-```yaml
-# Sensor to monitor system resources for the Front Door PI.
-- platform: rest
-  name: Facundo Desktop
-  resource: http://10.16.10.144:9999
-  timeout: 30
-  value_template: '{{ value_json.value}}'
-  headers:
-    Content-Type: application/json
-    User-Agent: Home Assistant Agent
-
-# To use the data on the Home Assistant Lovelace Dashboard we need to extract the values from the sensor, and store them as their own sensor values...
-- platform: template
-  sensors:
-    facundo_desktop_system:
-      value_template: '{{ states.sensor.facundo_desktop.system.state }}'
-      entity_id: sensor.facundo_desktop
-    facundo_desktop_system_uptime:
-      value_template: '{{ states.sensor.facundo_desktop.system.attributes["uptime"] | multiply(0.01666) | round(0) }}'
-      unit_of_measurement: 'm'
-      entity_id: sensor.facundo_desktop
-    facundo_desktop_cpu_core:
-      value_template: '{{ states.sensor.facundo_desktop.attributes["cpu"]["core"] }}'
-      unit_of_measurement: 'core'
-      entity_id: sensor.facundo_desktop
-    facundo_desktop_cpu_loadavg_1m:
-      value_template: '{{ states.sensor.facundo_desktop.attributes["cpu"]["loadavg"][0] }}'
-      unit_of_measurement: 'thread'
-      entity_id: sensor.facundo_desktop
-    facundo_desktop_cpu_loadavg_5m:
-      value_template: '{{ states.sensor.facundo_desktop.attributes["cpu"]["loadavg"][1] }}'
-      unit_of_measurement: 'thread'
-      entity_id: sensor.facundo_desktop
-    facundo_desktop_cpu_loadavg_15m:
-      value_template: '{{ states.sensor.facundo_desktop.attributes["cpu"]["loadavg"][2] }}'
-      unit_of_measurement: 'thread'
-      entity_id: sensor.facundo_desktop
-    facundo_desktop_cpu_usage:
-      value_template: '{{ states.sensor.facundo_desktop.attributes["cpu"]["usage"] }}'
-      unit_of_measurement: '%'
-      entity_id: sensor.facundo_desktop
-    facundo_desktop_drive_total:
-      value_template: '{{ states.sensor.facundo_desktop.attributes["drive"]["total"] }}'
-      unit_of_measurement: 'Mb'
-      entity_id: sensor.facundo_desktop
-    facundo_desktop_drive_used:
-      value_template: '{{ states.sensor.facundo_desktop.attributes["drive"]["used"] }}'
-      unit_of_measurement: 'Mb'
-      entity_id: sensor.facundo_desktop
-    facundo_desktop_mem_total:
-      value_template: '{{ states.sensor.facundo_desktop.attributes["mem"]["total"] | multiply(0.000976563) | round(0) }}'
-      unit_of_measurement: 'kb'
-      entity_id: sensor.facundo_desktop
-    facundo_desktop_mem_used:
-      value_template: '{{ states.sensor.facundo_desktop.attributes["mem"]["used"] | multiply(0.000976563) | round(0) }}'
-      unit_of_measurement: 'kb'
-      entity_id: sensor.facundo_desktop
-```
+Integrating into Home Assistant can be done with the ```custom_component``` [ha-desktop-monitor-component](https://github.com/cazbrat) or
+like any other sensor using the [RESTful Sensor](https://www.home-assistant.io/components/sensor.rest/).

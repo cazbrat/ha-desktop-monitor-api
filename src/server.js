@@ -19,15 +19,15 @@ var nou = require('node-os-utils');
 
 function buildResources(callback) {
     var resObject = {
-        "system": { "state": null, "attributes": null },
-        "cpu": { "state": null, "attributes": null },
-        "memory": { "state": null, "attributes": null },
-        "drive": { "state": null, "attributes": null },
+        "system": null,
+        "cpu": null,
+        "memory": null,
+        "drive": null,
     };
     sequence
         .then(next => { // SYSTEM (nou%)
-            resObject.system.state = [nou.os.hostname(), "Hostname", null];
-            resObject.system.attributes = [
+            resObject.system = [
+                [process.env.HOSTNAME, "Hostname", null],
                 [nou.os.uptime(), "Uptime", "s"],
             ];
             next();
@@ -35,8 +35,8 @@ function buildResources(callback) {
         .then(next => { // CPU (nou)
             nou.cpu.usage()
                 .then(usagedata => {
-                    resObject.cpu.state = [usagedata, "Usage", "%"];
-                    resObject.cpu.attributes = [
+                    resObject.cpu = [
+                        [usagedata, "Usage", "%"],
                         [os.cpus().length, "Core", "core"],
                         [os.arch(), "Arch", null],
                         [os.loadavg(), "Load averange", "threat"],
@@ -48,8 +48,8 @@ function buildResources(callback) {
         .then(next => { // MEM (nou%)
             nou.mem.used()
                 .then(memdata => {
-                    resObject.memory.state = [(100 * memdata.usedMemMb / memdata.totalMemMb).toFixed(2), "Used", "%"];
-                    resObject.memory.attributes = [
+                    resObject.memory = [
+                        [(100 * memdata.usedMemMb / memdata.totalMemMb).toFixed(2), "Used", "%"],
                         [memdata.totalMemMb, "Total", "Mb"],
                         [memdata.usedMemMb, "Used", "Mb"],
                     ];
@@ -59,8 +59,8 @@ function buildResources(callback) {
         .then(next => { // DRIVE (nou%)
             nou.drive.used()
                 .then(drivedata => {
-                    resObject.drive.state = [(100 * drivedata.usedGb / drivedata.totalGb).toFixed(2), "Used", "%"];
-                    resObject.attributes = [
+                    resObject.drive = [
+                        [(100 * drivedata.usedGb / drivedata.totalGb).toFixed(2), "Used", "%"],
                         [drivedata.totalGb, "Total", "Gb"],
                         [drivedata.usedGb, "Used", "Gb"],
                     ];
