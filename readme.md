@@ -5,7 +5,7 @@
 Welcome to the lightweight "ha-desktop-monitor-api" project! 
 (a fork of [`ned-kelly/ha-monitor-api`](https://github.com/ned-kelly/ha-monitor-api) project)
 
-This is a quick lightweight API designed to expose the system's current metrics of a linux desktop as a simple JSON endpoint that your Home Assistant instance can query.
+This is a quick lightweight API designed to expose the system's current metrics of a linux desktop. The expose is a simple JSON endpoint that your Home Assistant instance can query.
 
 It's been designed to run in a Docker Container so that you can quickly feed metrics back to Home Assistant and the primary goal of this tool is to expose a simple lightweight API that runs in a docker container exposing monitoring stats in real-time that can be fed into your other systems.
 
@@ -34,10 +34,11 @@ docker run --detach --name desktop-monitor-api \
 ```
 
 ## Updating
-To update the monitor, just update the image of Docker, rebuild and run! (don't forget remove the old container)
+To update the monitor, just update the image of Docker, rebuild and run! (don't forget remove the old container and image)
 ```
 cd ha-desktop-monitor-api
 docker container rm --force desktop-monitor-api
+docker image  rm --force desktop-monitor-api
 git pull origin master
 docker build --tag desktop-monitor-api .
 docker run --detach --name desktop-monitor-api \
