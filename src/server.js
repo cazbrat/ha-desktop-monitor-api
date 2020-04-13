@@ -23,8 +23,8 @@ function buildResources(callback) {
     sequence
         .then(next => { // SYSTEM (nou%)
             resObject.system = [
-                [process.env.HOSTNAME, "hostname", null],
-                [nou.os.uptime(), "uptime", "s"],
+                [(nou.os.uptime() / 3600).toFixed(2), "uptime", "h"],
+                [process.env.HOSTNAME, "hostname", null]
             ];
             next();
         })
