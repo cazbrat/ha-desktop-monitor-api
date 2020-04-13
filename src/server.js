@@ -23,8 +23,8 @@ function buildResources(callback) {
     sequence
         .then(next => { // SYSTEM (nou%)
             resObject.system = [
-                [process.env.HOSTNAME, "Hostname", null],
-                [nou.os.uptime(), "Uptime", "s"],
+                [process.env.HOSTNAME, "hostname", null],
+                [nou.os.uptime(), "uptime", "s"],
             ];
             next();
         })
@@ -32,10 +32,7 @@ function buildResources(callback) {
             nou.cpu.usage()
                 .then(usagedata => {
                     resObject.cpu = [
-                        [usagedata, "Usage", "%"],
-                        [os.cpus().length, "Core", "core"],
-                        [os.arch(), "Arch", null],
-                        [os.loadavg(), "Load averange", "threat"]
+                        [usagedata, "usage", "%"]
                     ];
                     next();
                 });
@@ -55,9 +52,8 @@ function buildResources(callback) {
             nou.mem.used()
                 .then(memdata => {
                     resObject.memory = [
-                        [(100 * memdata.usedMemMb / memdata.totalMemMb).toFixed(2), "Used", "%"],
-                        [memdata.totalMemMb, "Total", "Mb"],
-                        [memdata.usedMemMb, "Used", "Mb"],
+                        [(100 * memdata.usedMemMb / memdata.totalMemMb).toFixed(2), "used", "%"],
+                        [(memdata.totalMemMb / 1024).toFixed(2), "total", "Gb"]
                     ];
                     next();
                 });
@@ -66,9 +62,8 @@ function buildResources(callback) {
             nou.drive.used()
                 .then(drivedata => {
                     resObject.drive = [
-                        [(100 * drivedata.usedGb / drivedata.totalGb).toFixed(2), "Used", "%"],
-                        [drivedata.totalGb, "Total", "Gb"],
-                        [drivedata.usedGb, "Used", "Gb"],
+                        [(100 * drivedata.usedGb / drivedata.totalGb).toFixed(2), "used", "%"],
+                        [drivedata.totalGb, "total", "Gb"]
                     ];
                     next();
                 });

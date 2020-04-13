@@ -16,7 +16,6 @@ It's been designed to run in a Docker Container so that you can quickly feed met
 
 - Docker
 - Linux OS (amd64) that you wish to monitor
-- lm-sensors
 
 ## Standing up
 
@@ -38,7 +37,7 @@ To update the monitor, just update the image of Docker, rebuild and run! (don't 
 ```
 cd ha-desktop-monitor-api
 docker container rm --force desktop-monitor-api
-docker image  rm --force desktop-monitor-api
+docker image rm --force desktop-monitor-api
 git pull origin master
 docker build --tag desktop-monitor-api .
 docker run --detach --name desktop-monitor-api \
