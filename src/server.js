@@ -16,14 +16,10 @@ app.get("/healthcheck", (req, res, next) => {
 var Sequence = exports.Sequence || require('sequence').Sequence, sequence = Sequence.create(), err;
 var os = require('os');
 var nou = require('node-os-utils');
+var sensor = require('./lmsensor.js');
 
 function buildResources(callback) {
-    var resObject = {
-        "system": null,
-        "cpu": null,
-        "memory": null,
-        "drive": null,
-    };
+    var resObject = {};
     sequence
         .then(next => { // SYSTEM (nou%)
             resObject.system = [
@@ -39,9 +35,19 @@ function buildResources(callback) {
                         [usagedata, "Usage", "%"],
                         [os.cpus().length, "Core", "core"],
                         [os.arch(), "Arch", null],
-                        [os.loadavg(), "Load averange", "threat"],
-                        [null, "Temperature", "°C"]
+                        [os.loadavg(), "Load averange", "threat"]
                     ];
+                    next();
+                });
+        })
+        .then(next => { // LMSENSOR (lmsensor)
+            sensor.sensor()
+                .then(data => {
+                    resObject.lmsensor = [];
+                    sensors = JSON.parse(data);
+                    Object.keys(sensors).forEach(function (chip) {
+                        resObject.lmsensor.push([sensors[chip], chip, null]);
+                    });
                     next();
                 });
         })

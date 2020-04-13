@@ -9,13 +9,14 @@ This is a quick lightweight API designed to expose the system's current metrics 
 
 It's been designed to run in a Docker Container so that you can quickly feed metrics back to Home Assistant and the primary goal of this tool is to expose a simple lightweight API that runs in a docker container exposing monitoring stats in real-time that can be fed into your other systems.
 
-**NOTE:** The following system architectures are currently supported: `amd64`. - If you're running on an architecture other than these the process will not start / you will need to build the docker image yourself.
+**NOTE:** The following system architectures are currently supported: `x86_64`. - If you're running on an architecture other than these the process will not start / you will need to build the docker image yourself.
 
 
 ## Prerequisites
 
 - Docker
 - Linux OS (amd64) that you wish to monitor
+- lm-sensors
 
 ## Standing up
 
@@ -25,7 +26,25 @@ It's pretty straightforward, just clone down the sources and build and run the c
 git clone https://github.com/cazbrat/ha-desktop-monitor-api.git
 cd ha-desktop-monitor-api
 docker build --tag desktop-monitor-api .
-docker run --restart always --env HOSTNAME=`hostname -f` --publish 9999:9999 --detach --name desktop-monitor-api desktop-monitor-api:latest
+docker run --detach --name desktop-monitor-api \
+       --restart always \
+       --env HOSTNAME=`hostname -f` \
+       --publish 9999:9999 \
+       desktop-monitor-api:latest
+```
+
+## Updating
+To update the monitor, just update the image of Docker, rebuild and run! (don't forget remove the old container)
+```
+cd ha-desktop-monitor-api
+docker container rm --force desktop-monitor-api
+git pull origin master
+docker build --tag desktop-monitor-api .
+docker run --detach --name desktop-monitor-api \
+       --restart always \
+       --env HOSTNAME=`hostname -f` \
+       --publish 9999:9999 \
+       desktop-monitor-api:latest
 ```
 
 ## Integrating to Home Assistant
